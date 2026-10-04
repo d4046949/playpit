@@ -28,6 +28,11 @@ jobs:
         --tag myplaypit:${{ github.sha }} \
         myplaypit
 
+  - name: Tag image for ACR 
+    if: github.event_name == 'push' 
+    run: | 
+     docker tag \ myplaypit:${{ github.sha }} \ ${{ secrets.ACR_LOGIN_SERVER }}/myplaypit:${{ github.sha }}
+
   - name: Push Docker image 
     run: | 
       docker push ${{ secrets.ACR_LOGIN_SERVER }}/myplaypit:${{ github.sha }}
