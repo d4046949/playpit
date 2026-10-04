@@ -17,6 +17,6 @@ jobs:
   - name: Build Docker image
     run: |
       docker build \
-        --file myplaypit/Dockerfile \
+        --file src/myplaypit/myplaypit/Dockerfile \
         --tag myplaypit:${{ github.sha }} \
         myplaypit
