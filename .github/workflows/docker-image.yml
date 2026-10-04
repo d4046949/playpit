@@ -22,8 +22,7 @@ jobs:
      password: ${{ secrets.ACR_PASSWORD }}
 
   - name: Build Docker image
-    run: |
-     docker build --tag ${{ secrets.ACR_LOGIN_SERVER }}/myplaypit:${{ github.sha }} myplaypit
+    run: docker build --file myplaypit/myplaypit/Dockerfile --tag ${{ secrets.ACR_LOGIN_SERVER }}/myplaypit:${{ github.sha }} myplaypit
 
 
   - name: Push Docker image 
