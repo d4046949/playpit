@@ -27,3 +27,7 @@ jobs:
         --file myplaypit/myplaypit/Dockerfile \
         --tag myplaypit:${{ github.sha }} \
         myplaypit
+
+  - name: Push Docker image 
+    run: | 
+      docker push ${{ secrets.ACR_LOGIN_SERVER }}/myplaypit:${{ github.sha }}
