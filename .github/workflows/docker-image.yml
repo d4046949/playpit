@@ -10,7 +10,6 @@ jobs:
 build:
 runs-on: ubuntu-latest
 
-```
 steps:
   - name: Checkout
     uses: actions/checkout@v4
@@ -32,4 +31,3 @@ steps:
   - name: Push Docker image
     run: |
       docker push ${{ secrets.ACR_LOGIN_SERVER }}/myplaypit:${{ github.sha }}
-```
