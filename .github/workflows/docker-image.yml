@@ -65,9 +65,8 @@ jobs:
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Check Azure identity
-      run: |
-        az account show --query "{subscription:id, tenant:tenantId, user:user}" -o json]
-        
+      run: az account show
+
     - name: Update App Service container
       run: |
         az webapp config container set \
