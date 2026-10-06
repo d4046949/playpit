@@ -67,6 +67,13 @@ jobs:
     - name: Check Azure identity
       run: az account show
 
+    - name: Test App Service access
+      run: |
+        az webapp config appsettings list \
+          --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
+          --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
+          --output none
+
     - name: Update App Service container
       run: |
         az webapp config container set \
