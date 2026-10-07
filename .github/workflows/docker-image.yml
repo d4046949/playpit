@@ -94,12 +94,11 @@ jobs:
           --query '[0].{name:roleName, actions:permissions[0].actions, notActions:permissions[0].notActions}' \
           -o json
 
-    - name: Check deny assignments
+    - name: Test App Settings via ARM directly
       run: |
-        az role deny-assignment list \
-          --scope "/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
-          --all \
-          -o json
+        az rest \
+          --method POST \
+          --url "https://management.azure.com/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP }}/providers/Microsoft.Web/sites/${{ secrets.AZURE_WEBAPP_NAME }}/config/appsettings/list?api-version=2025-05-01"
 
     - name: Test App Service access
       run: |
