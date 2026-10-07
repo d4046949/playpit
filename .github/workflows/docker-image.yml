@@ -93,7 +93,15 @@ jobs:
           --name Contributor \
           --query '[0].{name:roleName, actions:permissions[0].actions, notActions:permissions[0].notActions}' \
           -o json
-
+          
+    - name: Verify target App Service
+      run: |
+        az webapp show \
+          --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
+          --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
+          --query '{name:name,id:id,kind:kind}' \
+          -o json
+      
     - name: Test App Settings via ARM directly
       run: |
         az rest \
