@@ -87,6 +87,13 @@ jobs:
     - name: Check Azure identity
       run: az account show
 
+    - name: Inspect Contributor role
+      run: |
+        az role definition list \
+          --name Contributor \
+          --query '[0].{name:roleName, actions:permissions[0].actions, notActions:permissions[0].notActions}' \
+          -o json
+
     - name: Test App Service access
       run: |
         az webapp config appsettings list \
