@@ -64,6 +64,26 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+    - name: Diagnose Azure permissions
+      run: |
+        echo "=== Current identity ==="
+        az account show \
+          --query '{user:user, subscription:id, tenant:tenantId}' \
+          -o json
+    
+        echo "=== Service principal ==="
+        az ad sp show \
+          --id "${{ secrets.AZURE_CLIENT_ID }}" \
+          --query '{appId:appId, objectId:id, name:displayName}' \
+          -o json
+    
+        echo "=== RBAC assignments ==="
+        az role assignment list \
+          --assignee "${{ secrets.AZURE_CLIENT_ID }}" \
+          --all \
+          --query '[].{role:roleDefinitionName,scope:scope,principalId:principalId}' \
+          -o table
+    
     - name: Check Azure identity
       run: az account show
 
