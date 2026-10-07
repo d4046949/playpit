@@ -94,6 +94,13 @@ jobs:
           --query '[0].{name:roleName, actions:permissions[0].actions, notActions:permissions[0].notActions}' \
           -o json
 
+    - name: Check deny assignments
+      run: |
+        az role deny-assignment list \
+          --scope "/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
+          --all \
+          -o json
+
     - name: Test App Service access
       run: |
         az webapp config appsettings list \
