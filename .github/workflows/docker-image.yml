@@ -93,6 +93,18 @@ jobs:
           --name Contributor \
           --query '[0].{name:roleName, actions:permissions[0].actions, notActions:permissions[0].notActions}' \
           -o json
+
+    - name: Show target resource
+      run: |
+        echo "RG: ${{ secrets.AZURE_RESOURCE_GROUP }}"
+        echo "WEBAPP: ${{ secrets.AZURE_WEBAPP_NAME }}"
+    
+        az resource show \
+          --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
+          --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
+          --resource-type "Microsoft.Web/sites" \
+          --query '{id:id,name:name,type:type}' \
+          -o json
           
     - name: Verify target App Service
       run: |
