@@ -119,35 +119,15 @@ jobs:
             
        - name: Check Azure
          run: az account show
-          
+
        - name: Create ACI runner
          env:
-              RUNNER_TOKEN: ${{ steps.runner-token.outputs.token }}
+            RUNNER_TOKEN: ${{ steps.runner-token.outputs.token }}
          run: |
-              az container create \
-                --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-                --name github-runner \
-                --image jrplaypitacr.azurecr.io/my-github-runner:aci \
-                --acr-identity $(az identity show \
-                  --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-                  --name github-runner-identity \
-                  --query id \
-                  --output tsv) \
-                --assign-identity $(az identity show \
-                  --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-                  --name github-runner-identity \
-                  --query id \
-                  --output tsv) \
-                --os-type Linux \
-                --restart-policy Never \
-                --environment-variables \
-                --cpu 1 \
-                --memory 2 \
-                  GITHUB_URL="https://github.com/d4046949/playpit" \
-                  RUNNER_TOKEN="$RUNNER_TOKEN" \
-                  RUNNER_NAME="aci-runner" \
-                  RUNNER_LABELS="self-hosted,linux,x64,dotnet10"
+            IDENTITY_ID=$(az identity show --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --name github-runner-identity --query id --output tsv)
         
+            az container create --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --name github-runner --image jrplaypitacr.azurecr.io/my-github-runner:aci --acr-identity "$IDENTITY_ID" --assign-identity "$IDENTITY_ID" --os-type Linux --restart-policy Never --cpu 1 --memory 2 --environment-variables GITHUB_URL="https://github.com/d4046949/playpit" RUNNER_TOKEN="$RUNNER_TOKEN" RUNNER_NAME="aci-runner" RUNNER_LABELS="self-hosted,linux,x64,dotnet10"
+                
        - name: Check ACI configuration
          run: |
           az container show \
