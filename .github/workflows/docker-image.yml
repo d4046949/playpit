@@ -39,10 +39,10 @@ jobs:
           --tag ${{ secrets.ACR_LOGIN_SERVER }}/myplaypit:${{ github.sha }} \
           myplaypit
 
-    #- name: Push Docker image
-     # run: |
-     #   docker push \
-     #     ${{ secrets.ACR_LOGIN_SERVER }}/myplaypit:${{ github.sha }}
+    - name: Push Docker image
+      run: |
+        docker push \
+         ${{ secrets.ACR_LOGIN_SERVER }}/myplaypit:${{ github.sha }}
 
 
   deploy:
