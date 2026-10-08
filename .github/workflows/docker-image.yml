@@ -26,6 +26,12 @@ jobs:
           
        - name: Check Azure
          run: az account show
+
+       - name: Start ACI runner
+         run: |
+          az container start \
+            --resource-group ${{secrets.AZURE_RESOURCE_GROUP}} \
+            --name github-runner
           
   build:
     needs: provision
