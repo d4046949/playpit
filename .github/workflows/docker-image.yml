@@ -70,7 +70,8 @@ jobs:
        - name: Get GitHub App installation ID
          id: app-installation
          env:
-          GH_TOKEN: ${{ steps.app-jwt.outputs.token }}
+          GH_TOKEN: ${{ github.token }}
+          APP_JWT: ${{ steps.app-jwt.outputs.token }}
          run: |
           INSTALLATION_ID=$(gh api \
             --header "Accept: application/vnd.github+json" \
