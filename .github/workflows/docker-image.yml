@@ -83,6 +83,23 @@ jobs:
           
        - name: Check Azure
          run: az account show
+
+       - name: Get GitHub App installation token
+         id: installation-token
+         env:
+          APP_JWT: ${{ steps.app-jwt.outputs.token }}
+          INSTALLATION_ID: ${{ steps.app-installation.outputs.installation-id }}
+         run: |
+          TOKEN=$(curl -s \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $APP_JWT" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "https://api.github.com/app/installations/${INSTALLATION_ID}/access_tokens" \
+            | python -c "import sys,json; print(json.load(sys.stdin)['token'])")
+
+          echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
+          echo "Installation token obtained successfully"
           
        - name: Start ACI runner
          run: |
