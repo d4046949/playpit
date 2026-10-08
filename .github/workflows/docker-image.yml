@@ -32,6 +32,42 @@ jobs:
          run: |
           echo "GitHub App ID is configured: ${GH_APP_ID}"
           echo "Private key is configured: ${#GH_APP_PRIVATE_KEY} characters"
+      
+       - name: Install PyJWT
+         run: |
+          python -m pip install PyJWT cryptography
+          
+       - name: Generate GitHub App JWT
+         id: app-jwt
+         env:
+          GH_APP_ID: ${{ secrets.GH_APP_ID }}
+          GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
+         run: |
+          python - <<'PY'
+          import os
+          import time
+          import jwt
+
+          app_id = os.environ["GH_APP_ID"]
+          private_key = os.environ["GH_APP_PRIVATE_KEY"]
+
+          now = int(time.time())
+
+          token = jwt.encode(
+              {
+                  "iat": now - 60,
+                  "exp": now + 540,
+                  "iss": app_id,
+              },
+              private_key,
+              algorithm="RS256",
+          )
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"token={token}\n")
+          PY
+
+
           
        - name: Check Azure
          run: az account show
