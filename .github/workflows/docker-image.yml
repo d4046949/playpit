@@ -74,7 +74,7 @@ jobs:
           APP_JWT: ${{ steps.app-jwt.outputs.token }}
          run: |
           INSTALLATION_ID=$(gh api \
-            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer $APP_JWT" \
             repos/${{ github.repository }}/installation \
             --jq .id)
 
