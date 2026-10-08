@@ -32,11 +32,19 @@ jobs:
       run: |
         az acr login --name ${{ secrets.ACR_NAME }}
 
-    - name: Build Docker image
+    #- name: Build Docker image
+    #  run: |
+    #    docker build \
+    #      --file myplaypit/myplaypit/Dockerfile \
+    #      --tag ${{ secrets.ACR_LOGIN_SERVER }}/myplaypit:${{ github.sha }} \
+    #      myplaypit
+
+    - name: Build and push Docker image
       run: |
-        docker build \
+        az acr build \
+          --registry ${{ secrets.ACR_NAME }} \
+          --image myplaypit:${{ github.sha }} \
           --file myplaypit/myplaypit/Dockerfile \
-          --tag ${{ secrets.ACR_LOGIN_SERVER }}/myplaypit:${{ github.sha }} \
           myplaypit
 
     - name: Push Docker image
