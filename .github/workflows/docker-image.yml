@@ -141,6 +141,8 @@ jobs:
                 --os-type Linux \
                 --restart-policy Never \
                 --environment-variables \
+                --cpu 1 \
+                --memory 2 \
                   GITHUB_URL="https://github.com/d4046949/playpit" \
                   RUNNER_TOKEN="$RUNNER_TOKEN" \
                   RUNNER_NAME="aci-runner" \
