@@ -100,7 +100,23 @@ jobs:
 
           echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
           echo "Installation token obtained successfully"
-          
+
+       - name: Get runner registration token
+         id: runner-token
+         env:
+            INSTALLATION_TOKEN: ${{ steps.installation-token.outputs.token }}
+         run: |
+            TOKEN=$(curl -s \
+              -X POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $INSTALLATION_TOKEN" \
+              -H "X-GitHub-Api-Version: 2026-03-10" \
+              "https://api.github.com/repos/${{ github.repository }}/actions/runners/registration-token" \
+              | python -c "import sys,json; print(json.load(sys.stdin)['token'])")
+        
+            echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
+            echo "Runner registration token obtained successfully"
+    
        - name: Start ACI runner
          run: |
           az container start \
