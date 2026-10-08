@@ -163,7 +163,42 @@ jobs:
             --name github-runner
         
           exit 1
-            
+
+
+          - name: Confirm GitHub runner is online
+            env:
+              INSTALLATION_TOKEN: ${{ steps.installation-token.outputs.token }}
+            run: |
+              echo "Waiting for GitHub runner to register..."
+          
+              for i in {1..30}; do
+                RUNNERS=$(curl -s \
+                  -H "Accept: application/vnd.github+json" \
+                  -H "Authorization: Bearer $INSTALLATION_TOKEN" \
+                  -H "X-GitHub-Api-Version: 2026-03-10" \
+                  "https://api.github.com/repos/${{ github.repository }}/actions/runners")
+          
+                ONLINE=$(echo "$RUNNERS" | python -c "
+              import sys, json
+              data = json.load(sys.stdin)
+              print(any(
+                  r['name'] == 'aci-runner' and r['status'] == 'online'
+                  for r in data['runners']
+              ))
+              ")
+          
+                if [ "$ONLINE" = "True" ]; then
+                  echo "GitHub runner is ONLINE."
+                  exit 0
+                fi
+          
+                echo "Runner not online yet..."
+                sleep 2
+              done
+          
+              echo "Runner did not register with GitHub."
+              exit 1
+                      
              #- name: Start ACI runner
              #  run: |
               #  az container start \
