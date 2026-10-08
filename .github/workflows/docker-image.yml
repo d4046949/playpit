@@ -135,6 +135,34 @@ jobs:
             --name github-runner \
             --query "containers[0].environmentVariables[].name" \
             --output tsv
+
+       - name: Wait for ACI runner
+         run: |
+          echo "Waiting for ACI runner to register..."
+        
+          for i in {1..30}; do
+            STATE=$(az container show \
+              --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
+              --name github-runner \
+              --query "instanceView.state" \
+              --output tsv)
+        
+            echo "ACI state: $STATE"
+        
+            if [ "$STATE" = "Running" ]; then
+              echo "ACI is running."
+              exit 0
+            fi
+        
+            sleep 2
+          done
+        
+          echo "ACI did not reach Running state."
+          az container logs \
+            --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
+            --name github-runner
+        
+          exit 1
             
              #- name: Start ACI runner
              #  run: |
