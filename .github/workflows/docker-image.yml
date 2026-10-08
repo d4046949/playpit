@@ -24,6 +24,14 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+       - name: Test GitHub App
+         env:
+            GH_APP_ID: ${{ secrets.GH_APP_ID }}
+            GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
+         run: |
+          echo "GitHub App ID is configured: ${GH_APP_ID}"
+          echo "Private key is configured: ${#GH_APP_PRIVATE_KEY} characters"
           
        - name: Check Azure
          run: az account show
