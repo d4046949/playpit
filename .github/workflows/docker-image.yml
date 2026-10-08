@@ -116,12 +116,20 @@ jobs:
         
             echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
             echo "Runner registration token obtained successfully"
-    
-       - name: Start ACI runner
+
+       - name: Check ACI configuration
          run: |
-          az container start \
-            --resource-group ${{secrets.AZURE_RESOURCE_GROUP}} \
-            --name github-runner
+          az container show \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --name github-runner \
+            --query "containers[0].environmentVariables[].name" \
+            --output tsv
+            
+             #- name: Start ACI runner
+             #  run: |
+              #  az container start \
+               #   --resource-group ${{secrets.AZURE_RESOURCE_GROUP}} \
+                #  --name github-runner
           
   build:
     needs: provision
