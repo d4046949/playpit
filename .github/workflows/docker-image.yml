@@ -13,8 +13,9 @@ permissions:
 jobs:
 
   build:
+    runs-on: [self-hosted, dotnet10]
     name: Build and Push
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
@@ -38,10 +39,10 @@ jobs:
           --tag ${{ secrets.ACR_LOGIN_SERVER }}/myplaypit:${{ github.sha }} \
           myplaypit
 
-    - name: Push Docker image
-      run: |
-        docker push \
-          ${{ secrets.ACR_LOGIN_SERVER }}/myplaypit:${{ github.sha }}
+    #- name: Push Docker image
+     # run: |
+     #   docker push \
+     #     ${{ secrets.ACR_LOGIN_SERVER }}/myplaypit:${{ github.sha }}
 
 
   deploy:
