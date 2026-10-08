@@ -67,7 +67,19 @@ jobs:
               f.write(f"token={token}\n")
           PY
 
+       - name: Get GitHub App installation ID
+         id: app-installation
+         env:
+          APP_JWT: ${{ steps.app-jwt.outputs.token }}
+         run: |
+          INSTALLATION_ID=$(gh api \
+            --header "Authorization: Bearer $APP_JWT" \
+            --header "Accept: application/vnd.github+json" \
+            repos/${{ github.repository }}/installation \
+            --jq .id)
 
+          echo "installation-id=$INSTALLATION_ID" >> "$GITHUB_OUTPUT"
+          echo "Installation ID: $INSTALLATION_ID"
           
        - name: Check Azure
          run: az account show
