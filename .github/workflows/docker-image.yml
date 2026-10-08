@@ -12,7 +12,23 @@ permissions:
 
 jobs:
 
+  provision:
+    name: Wake up ACI instance
+    runs-on: ubuntu-latest
+
+    steps:
+       - name: Login to Azure
+         uses: azure/login@v3
+         with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          
+       - name: Check Azure
+         run: az account show
+          
   build:
+    needs: provision
     runs-on: [self-hosted, dotnet10]
     name: Build and Push
     #runs-on: ubuntu-latest
